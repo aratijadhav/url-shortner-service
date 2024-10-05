@@ -3,19 +3,13 @@ package helperfunctions
 import (
 	"fmt"
 	"math/rand"
+	"sort"
 	"strings"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-type OriginalUrlData struct {
-	Shorturl1 string
-	Count     int
-}
-
 var Shorturls = make(map[string]string)
-
-// var Originalurls = make(map[string]OriginalUrlData)
 var Originalurls = make(map[string]map[string]int)
 
 /*
@@ -49,6 +43,31 @@ func checkIfOriginalUrlIsAlreadyShorten(originalurl string) (string, bool) {
 
 }
 
+func sortOriginalUrls() {
+
+	type URLCount struct {
+		Originalurl string
+		URL         string
+		Count       int
+	}
+	var sortedURLs []URLCount
+
+	for originalurl, urls := range Originalurls {
+		for url, count := range urls {
+			sortedURLs = append(sortedURLs, URLCount{Originalurl: originalurl, URL: url, Count: count})
+		}
+	}
+
+	sort.Slice(sortedURLs, func(i, j int) bool {
+		return sortedURLs[i].Count > sortedURLs[j].Count
+	})
+
+	fmt.Println("Sorted URLs:")
+	for _, entry := range sortedURLs {
+		fmt.Printf("originalurl: %s, URL: %s, Count: %d\n", entry.Originalurl, entry.URL, entry.Count)
+	}
+}
+
 /*
 Global Functions
 */
@@ -67,4 +86,9 @@ func GetExternalUrl(url string) string {
 	}
 	fmt.Println(url)
 	return url
+}
+
+func GetMostVisited() {
+
+	sortOriginalUrls()
 }

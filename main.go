@@ -14,10 +14,13 @@ func main() {
 
 	createRouteURL := routeutils.CreateRoute()
 	RedirectOriginalURL := routeutils.RedirectOriginalURL()
+	MostVistiedURL := routeutils.MostvisitedURLRoute()
 
 	router.HandleFunc(createRouteURL.Url, createRouteURL.HandlerName).Methods(createRouteURL.Methods...)
 
 	router.HandleFunc(RedirectOriginalURL.Url, RedirectOriginalURL.HandlerName).Methods(RedirectOriginalURL.Methods...)
+
+	router.HandleFunc(MostVistiedURL.Url, MostVistiedURL.HandlerName).Methods(MostVistiedURL.Methods...)
 
 	fmt.Println("Starting on 8080 port")
 	log.Fatal(http.ListenAndServe(":8080", router))
