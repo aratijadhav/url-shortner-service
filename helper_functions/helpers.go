@@ -12,6 +12,12 @@ const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 var Shorturls = make(map[string]string)
 var Originalurls = make(map[string]map[string]int)
 
+type URLCount struct {
+	Originalurl string
+	URL         string
+	Count       int
+}
+
 /*
 Local function
 */
@@ -37,34 +43,31 @@ func checkIfOriginalUrlIsAlreadyShorten(originalurl string) (string, bool) {
 		Originalurls[originalurl] = make(map[string]int)
 		Originalurls[originalurl][genString] = 1
 	}
-
 	Shorturls[genString] = originalurl
 	return short_url, false
 
 }
 
 func sortOriginalUrls() {
-
-	type URLCount struct {
-		Originalurl string
-		URL         string
-		Count       int
-	}
 	var sortedURLs []URLCount
 
-	for originalurl, urls := range Originalurls {
-		for url, count := range urls {
+	for originalurl, short_urls := range Originalurls {
+		for url, count := range short_urls {
 			sortedURLs = append(sortedURLs, URLCount{Originalurl: originalurl, URL: url, Count: count})
 		}
 	}
-
 	sort.Slice(sortedURLs, func(i, j int) bool {
 		return sortedURLs[i].Count > sortedURLs[j].Count
 	})
 
 	fmt.Println("Sorted URLs:")
-	for _, entry := range sortedURLs {
-		fmt.Printf("originalurl: %s, URL: %s, Count: %d\n", entry.Originalurl, entry.URL, entry.Count)
+	for idx := 0; idx < len(sortedURLs); idx++ {
+		if idx == 3 {
+			break
+		}
+		item := sortedURLs[idx]
+		fmt.Printf("originalurl: %s, URL: %s, Count: %d\n", item.Originalurl, item.URL, item.Count)
+
 	}
 }
 
@@ -76,7 +79,6 @@ func GenerateShortUrl(url string) (string, bool) {
 	if isExists {
 		return shortURL, false
 	}
-
 	return shortURL, true
 }
 
@@ -89,6 +91,5 @@ func GetExternalUrl(url string) string {
 }
 
 func GetMostVisited() {
-
 	sortOriginalUrls()
 }
