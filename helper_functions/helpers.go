@@ -66,7 +66,7 @@ func sortOriginalUrls() {
 			break
 		}
 		item := sortedURLs[idx]
-		fmt.Printf("originalurl: %s, URL: %s, Count: %d\n", item.Originalurl, item.URL, item.Count)
+		fmt.Printf("originalurl: %s, Count: %d\n", item.Originalurl, item.Count)
 
 	}
 }
