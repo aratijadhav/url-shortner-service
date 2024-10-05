@@ -3,6 +3,7 @@ package helperfunctions
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -13,7 +14,9 @@ type OriginalUrlData struct {
 }
 
 var Shorturls = make(map[string]string)
-var Originalurls = make(map[string]OriginalUrlData)
+
+// var Originalurls = make(map[string]OriginalUrlData)
+var Originalurls = make(map[string]map[string]int)
 
 /*
 Local function
@@ -27,27 +30,22 @@ func randStringBytes(n int) string {
 }
 
 func checkIfOriginalUrlIsAlreadyShorten(originalurl string) (string, bool) {
-
+	genString := randStringBytes(5)
+	var short_url = genString
 	if shortURL, ok := Originalurls[originalurl]; ok {
-		Originalurls[originalurl] = OriginalUrlData{
-			Shorturl1: shortURL.Shorturl1,
-			Count:     shortURL.Count + 1,
+		for url, val := range shortURL {
+			short_url = url
+			Originalurls[originalurl][url] = val + 1
+			fmt.Printf("%s URL is already shortened, shortened URL: %s", originalurl, url)
 		}
-		fmt.Printf("%s URL is already shortened, shortened URL: %s", originalurl, shortURL.Shorturl1)
-		fmt.Println()
-		fmt.Println(Originalurls)
-		return shortURL.Shorturl1, true
+		return short_url, true
 	} else {
-		genString := randStringBytes(5)
-		Originalurls[originalurl] = OriginalUrlData{
-			Shorturl1: genString,
-			Count:     1,
-		}
-		Shorturls[genString] = originalurl
-		fmt.Println()
-		fmt.Println(Originalurls)
-		return genString, false
+		Originalurls[originalurl] = make(map[string]int)
+		Originalurls[originalurl][genString] = 1
 	}
+
+	Shorturls[genString] = originalurl
+	return short_url, false
 
 }
 
@@ -59,5 +57,14 @@ func GenerateShortUrl(url string) (string, bool) {
 	if isExists {
 		return shortURL, false
 	}
+
 	return shortURL, true
+}
+
+func GetExternalUrl(url string) string {
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		url = "https://" + url
+	}
+	fmt.Println(url)
+	return url
 }

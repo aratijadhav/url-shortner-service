@@ -23,3 +23,19 @@ func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write([]byte(responseMsg))
 }
+
+func RedirectOriginalURL(w http.ResponseWriter, r *http.Request) {
+	shorturlname := mux.Vars(r)["shortpath"]
+
+	if orignalurl, ok := helperfunctions.Shorturls[shorturlname]; ok {
+		orignalurl = helperfunctions.GetExternalUrl(orignalurl)
+		w.Header().Set("Content-Type", "application/txt")
+		http.Redirect(w, r, orignalurl, http.StatusPermanentRedirect)
+	} else {
+		w.Header().Set("Content-Type", "application/txt")
+		w.WriteHeader(http.StatusBadRequest)
+		errorMsg := "Error: Incorrect Short URL"
+		w.Write([]byte(errorMsg))
+	}
+
+}
