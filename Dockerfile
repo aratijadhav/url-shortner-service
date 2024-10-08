@@ -1,10 +1,12 @@
 FROM golang:latest
+LABEL authors="Arati Jadhav aratijadhav@gmail.com"
+
 
 WORKDIR /app
 
-COPY url-shortner-service ./url-shortner-service
+COPY shortnersvc ./shortnersvc
 
-WORKDIR /app/url-shortner-service
-RUN ls /app/url-shortner-service
+WORKDIR /app/shortnersvc
+RUN ls /app/shortnersvc
 
 ENTRYPOINT ["go", "run", "main.go"]
