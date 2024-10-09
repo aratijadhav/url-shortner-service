@@ -48,7 +48,7 @@ func checkIfOriginalUrlIsAlreadyShorten(originalurl string) (string, bool) {
 
 }
 
-func sortOriginalUrls() {
+func sortOriginalUrls() []URLCount {
 	var sortedURLs []URLCount
 
 	for originalurl, short_urls := range Originalurls {
@@ -69,6 +69,8 @@ func sortOriginalUrls() {
 		fmt.Printf("originalurl: %s, Count: %d\n", item.Originalurl, item.Count)
 
 	}
+	return sortedURLs
+
 }
 
 /*
@@ -90,6 +92,9 @@ func GetExternalUrl(url string) string {
 	return url
 }
 
-func GetMostVisited() {
-	sortOriginalUrls()
+func GetMostVisited() []URLCount {
+	result := sortOriginalUrls()
+
+	return result
+
 }

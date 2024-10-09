@@ -42,8 +42,9 @@ func RedirectOriginalURL(w http.ResponseWriter, r *http.Request) {
 
 func MostvisitedURL(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/txt")
-	msg := "Welcome to MostvisitedURL"
-	helperfunctions.GetMostVisited()
+
+	result := helperfunctions.GetMostVisited()
+	msg := fmt.Sprintf("MostvisitedURL are: %v", result)
 	w.Write([]byte(msg))
 
 }

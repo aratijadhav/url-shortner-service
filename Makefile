@@ -19,3 +19,5 @@ docker-push: docker-build
 docker-stop:
 	docker stop $(CONTAINER_NAME) && docker rm $(CONTAINER_NAME)
 
+docker-remove:
+	docker rm url-shortner-container
