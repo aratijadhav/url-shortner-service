@@ -11,7 +11,7 @@ docker-build:
 	docker build -t $(IMAGE_NAME):$(TAG) .
 
 docker-run: docker-build
-	docker run -t -d --name $(CONTAINER_NAME) -p 8080:8080 $(IMAGE_NAME)
+	docker run -t -d --name $(CONTAINER_NAME) -p 8080:8080 $(IMAGE_NAME):$(TAG)
 
 docker-push: docker-build
 	docker image push $(IMAGE_NAME):$(TAG)
