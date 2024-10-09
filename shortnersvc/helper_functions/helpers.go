@@ -48,8 +48,9 @@ func checkIfOriginalUrlIsAlreadyShorten(originalurl string) (string, bool) {
 
 }
 
-func sortOriginalUrls() []URLCount {
+func sortOriginalUrls() map[string]int {
 	var sortedURLs []URLCount
+	var mostvisitedurl = make(map[string]int)
 
 	for originalurl, short_urls := range Originalurls {
 		for url, count := range short_urls {
@@ -61,15 +62,17 @@ func sortOriginalUrls() []URLCount {
 	})
 
 	fmt.Println("Sorted URLs:")
+
 	for idx := 0; idx < len(sortedURLs); idx++ {
 		if idx == 3 {
 			break
 		}
 		item := sortedURLs[idx]
+		mostvisitedurl[item.Originalurl] = item.Count
 		fmt.Printf("originalurl: %s, Count: %d\n", item.Originalurl, item.Count)
 
 	}
-	return sortedURLs
+	return mostvisitedurl
 
 }
 
@@ -92,9 +95,6 @@ func GetExternalUrl(url string) string {
 	return url
 }
 
-func GetMostVisited() []URLCount {
-	result := sortOriginalUrls()
-
-	return result
-
+func GetMostVisited() map[string]int {
+	return sortOriginalUrls()
 }
