@@ -2,11 +2,6 @@ IMAGE_NAME=aratijadhav/url-shortner
 CONTAINER_NAME=url-shortner-container
 TAG=v0.1
 
-all: build
-
-build: 
-	go build .
-
 docker-build: 
 	docker build -t $(IMAGE_NAME):$(TAG) .
 
