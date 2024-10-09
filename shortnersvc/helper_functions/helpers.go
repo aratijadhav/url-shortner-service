@@ -3,24 +3,20 @@ package helperfunctions
 import (
 	"fmt"
 	"math/rand"
-	"sort"
 	"strings"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-var Shorturls = make(map[string]string)
-var Originalurls = make(map[string]map[string]int)
-
-type URLCount struct {
-	Originalurl string
-	URL         string
-	Count       int
+type URLs struct {
+	Shorturl string
+	Visit    int
 }
 
-/*
-Local function
-*/
+var URLInfo = make(map[string]URLs)
+var mostvisited = make(map[string]int)
+var Shorturlsl = make(map[string]string)
+
 func randStringBytes(n int) string {
 	b := make([]byte, n)
 	for i := range b {
@@ -31,54 +27,24 @@ func randStringBytes(n int) string {
 
 func checkIfOriginalUrlIsAlreadyShorten(originalurl string) (string, bool) {
 	genString := randStringBytes(5)
-	var short_url = genString
-	if shortURL, ok := Originalurls[originalurl]; ok {
-		for url, val := range shortURL {
-			short_url = url
-			Originalurls[originalurl][url] = val + 1
-			fmt.Printf("%s URL is already shortened, shortened URL: %s", originalurl, url)
+	if original_url, ok := URLInfo[originalurl]; ok {
+		URLInfo[originalurl] = URLs{
+			Shorturl: original_url.Shorturl,
+			Visit:    original_url.Visit,
 		}
-		return short_url, true
+		fmt.Printf("%s URL is already shortened, shortened URL: %s", originalurl, original_url.Shorturl)
+		return original_url.Shorturl, true
 	} else {
-		Originalurls[originalurl] = make(map[string]int)
-		Originalurls[originalurl][genString] = 1
-	}
-	Shorturls[genString] = originalurl
-	return short_url, false
+		URLInfo[originalurl] = URLs{
+			Shorturl: genString,
+			Visit:    0,
+		}
 
+	}
+	Shorturlsl[genString] = originalurl
+	return genString, false
 }
 
-func sortOriginalUrls() map[string]int {
-	var sortedURLs []URLCount
-	var mostvisitedurl = make(map[string]int)
-
-	for originalurl, short_urls := range Originalurls {
-		for url, count := range short_urls {
-			sortedURLs = append(sortedURLs, URLCount{Originalurl: originalurl, URL: url, Count: count})
-		}
-	}
-	sort.Slice(sortedURLs, func(i, j int) bool {
-		return sortedURLs[i].Count > sortedURLs[j].Count
-	})
-
-	fmt.Println("Sorted URLs:")
-
-	for idx := 0; idx < len(sortedURLs); idx++ {
-		if idx == 3 {
-			break
-		}
-		item := sortedURLs[idx]
-		mostvisitedurl[item.Originalurl] = item.Count
-		fmt.Printf("originalurl: %s, Count: %d\n", item.Originalurl, item.Count)
-
-	}
-	return mostvisitedurl
-
-}
-
-/*
-Global Functions
-*/
 func GenerateShortUrl(url string) (string, bool) {
 	shortURL, isExists := checkIfOriginalUrlIsAlreadyShorten(url)
 	if isExists {
@@ -91,21 +57,31 @@ func GetExternalUrl(url string) string {
 	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
 		url = "https://" + url
 	}
-	fmt.Println(url)
 	return url
 }
 
-func GetMostVisited() map[string]int {
-	return sortOriginalUrls()
+func GenerateMostVisited(originalURL string, visits int) {
+
+	var leastvisitedurl = originalURL
+	var leastvisistedcount = visits
+	if len(mostvisited) == 3 {
+		for url, visitCount := range mostvisited {
+			if url == originalURL {
+				mostvisited[originalURL] = visits
+			} else if visitCount < visits {
+				leastvisitedurl = url
+				leastvisistedcount = visitCount
+			}
+		}
+		if leastvisistedcount < visits {
+			delete(mostvisited, leastvisitedurl)
+			mostvisited[originalURL] = visits
+		}
+	} else {
+		mostvisited[originalURL] = visits
+	}
 }
 
-func GetAllURL() map[string]int {
-	allurl := make(map[string]int)
-	for originalurl, short_urls := range Originalurls {
-		for _, count := range short_urls {
-			allurl[originalurl] = count
-		}
-	}
-	return allurl
-
+func GetMostVisited() map[string]int {
+	return mostvisited
 }

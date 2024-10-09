@@ -17,9 +17,11 @@ func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 	if isGenerated {
 		w.WriteHeader(http.StatusCreated)
 		responseMsg = fmt.Sprintf("Shortned URL for %s is: http://localhost:8080/%s", urlName, shortUrl)
+
 	} else {
 		w.WriteHeader(http.StatusFound)
 		responseMsg = fmt.Sprintf("Shortned URL for %s already exists: http://localhost:8080/%s ", urlName, shortUrl)
+
 	}
 	w.Write([]byte(responseMsg))
 }
@@ -27,10 +29,16 @@ func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 func RedirectOriginalURL(w http.ResponseWriter, r *http.Request) {
 	shorturlname := mux.Vars(r)["shortpath"]
 
-	if orignalurl, ok := helperfunctions.Shorturls[shorturlname]; ok {
-		orignalurl = helperfunctions.GetExternalUrl(orignalurl)
+	if original_url, ok := helperfunctions.Shorturlsl[shorturlname]; ok {
+		urlinfoData := helperfunctions.URLInfo[original_url]
+		urlinfoData.Visit += 1
+		helperfunctions.URLInfo[original_url] = urlinfoData
+
+		orignalurl := helperfunctions.GetExternalUrl(original_url)
+		helperfunctions.GenerateMostVisited(original_url, helperfunctions.URLInfo[original_url].Visit)
+
 		w.Header().Set("Content-Type", "application/txt")
-		http.Redirect(w, r, orignalurl, http.StatusPermanentRedirect)
+		http.Redirect(w, r, orignalurl, http.StatusTemporaryRedirect)
 	} else {
 		w.Header().Set("Content-Type", "application/txt")
 		w.WriteHeader(http.StatusBadRequest)
@@ -49,11 +57,11 @@ func MostvisitedURL(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetAllURL(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/txt")
+// func GetAllURL(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/txt")
 
-	allurl := helperfunctions.GetAllURL()
-	msg := fmt.Sprintf("All URLs are: %v", allurl)
-	w.Write([]byte(msg))
+// 	allurl := helperfunctions.GetAllURL()
+// 	msg := fmt.Sprintf("All URLs are: %v", allurl)
+// 	w.Write([]byte(msg))
 
-}
+// }
