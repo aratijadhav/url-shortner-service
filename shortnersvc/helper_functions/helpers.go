@@ -98,3 +98,14 @@ func GetExternalUrl(url string) string {
 func GetMostVisited() map[string]int {
 	return sortOriginalUrls()
 }
+
+func GetAllURL() map[string]int {
+	allurl := make(map[string]int)
+	for originalurl, short_urls := range Originalurls {
+		for _, count := range short_urls {
+			allurl[originalurl] = count
+		}
+	}
+	return allurl
+
+}

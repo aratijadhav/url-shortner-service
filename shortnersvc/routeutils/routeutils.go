@@ -31,3 +31,12 @@ func MostvisitedURLRoute() HandlerStruct {
 	}
 	return HS
 }
+
+func Getallurl() HandlerStruct {
+	var HS = HandlerStruct{
+		Url:         routes.API + routes.GETALLURL,
+		HandlerName: rest.GetAllURL,
+		Methods:     []string{"GET"},
+	}
+	return HS
+}

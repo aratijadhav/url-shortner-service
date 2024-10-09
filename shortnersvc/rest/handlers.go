@@ -48,3 +48,12 @@ func MostvisitedURL(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(msg))
 
 }
+
+func GetAllURL(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/txt")
+
+	allurl := helperfunctions.GetAllURL()
+	msg := fmt.Sprintf("All URLs are: %v", allurl)
+	w.Write([]byte(msg))
+
+}
