@@ -1,7 +1,7 @@
 
 # URL shortner
 
-URL Shortener is service that allows users to shorten long URLs. The service generates a unique short link for each long URL, which used to redirect users to the original link.
+URL Shortener is a simple application that allows users to shorten long URLs. The application generates a unique short link for each long URL, which used to redirect users to the original link.
 
 
 

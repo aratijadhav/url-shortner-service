@@ -65,15 +65,17 @@ func GenerateMostVisited(originalURL string, visits int) {
 	var leastvisitedurl = originalURL
 	var leastvisistedcount = visits
 	if len(mostvisited) == 3 {
+		alreadyMostVisited := false
 		for url, visitCount := range mostvisited {
 			if url == originalURL {
 				mostvisited[originalURL] = visits
+				alreadyMostVisited = true
 			} else if visitCount < visits {
 				leastvisitedurl = url
 				leastvisistedcount = visitCount
 			}
 		}
-		if leastvisistedcount < visits {
+		if leastvisistedcount < visits && !alreadyMostVisited {
 			delete(mostvisited, leastvisitedurl)
 			mostvisited[originalURL] = visits
 		}
